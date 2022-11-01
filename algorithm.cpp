@@ -113,7 +113,7 @@ BIT MCS(Board board, size_t max_num){
     if (board.get_legal_bit_moves().count() == 0) return best_move;
 
     Node *root = new Node (board);
-    float max_winrate = 0;
+    float max_winrate = -1;
     root->grow_tree();
     for (size_t i=0;i<max_num;i++){
         auto chosed_child = root->children[rand()%root->children.size()];
