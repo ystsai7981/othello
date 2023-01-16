@@ -94,14 +94,14 @@ BIT move(Board board, Player player){
         case Player::random:
         {
             bit_pos = random_move(board);
-            print_single_move_info(bit_pos);
+            // print_single_move_info(bit_pos);
             return bit_pos;
             break;
         }
         case Player::MCS:
         {
             bit_pos = MCS(board, 500);
-            print_single_move_info(bit_pos);
+            // print_single_move_info(bit_pos);
             return bit_pos;
             break;
         }
@@ -119,9 +119,8 @@ Player switch_player(Player player_now, Player player1, Player player2){
 }
 
 void othello_game(Player player1, Player player2){
-    gui board_gui;
     Board board;
-    board_gui.print(board);
+    printboard(board);
     BIT bit_move;
     Player player_now = player1;
     while(!board.check_end()){
@@ -129,12 +128,13 @@ void othello_game(Player player1, Player player2){
         {
             cout << board.get_player_str() << " turn: ";
             bit_move = move(board, player_now);
+            if (player_now != Player::human) print_single_move_info(bit_move);
             if (board.get_legal_bit_moves().any() & !bit_move.any()){
                 cerr << "You can't pass this turn!" << endl;
                 continue;
             }
             board.move(bit_move);
-            board_gui.print(board);
+            printboard(board);
             if (board.check_end()) cout << board.get_result_str() << endl;
             player_now = switch_player(player_now, player1, player2);
         }
@@ -143,6 +143,52 @@ void othello_game(Player player1, Player player2){
             std::cerr << e.what() << '\n';
         }
     }
+}
+void play_muiti_game(Player player1, Player player2, size_t game_num){
+    size_t player1_win=0, player2_win=0, draw=0;
+    for (size_t i=0;i<game_num;i++){
+        Board board;
+        BIT bit_move;
+        Player player_now = player1;
+        while(!board.check_end()){
+            try
+            {
+                bit_move = move(board, player_now);
+                if (board.get_legal_bit_moves().any() & !bit_move.any()){
+                    cerr << "You can't pass this turn!" << endl;
+                    continue;
+                }
+                board.move(bit_move);
+                if (board.check_end()){
+                    auto winner = board.get_result();
+                    switch (winner)
+                    {
+                    case Turn::black:{
+                        player1_win+=1;
+                        break;
+                    }
+                    case Turn::white:{
+                        player2_win+=1;
+                        break;
+                    }
+                    case Turn::none:{
+                        draw+=1;
+                    }
+                    default:
+                        break;
+                    }
+                    break;
+                }
+                player_now = switch_player(player_now, player1, player2);
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+        cout << "Player 1 win: " << player1_win << " Player 2 win: " << player2_win << " Draw: " << draw << endl;
+    }
+    
 }
 
 int main(void){
@@ -156,6 +202,7 @@ int main(void){
     player1 = get_player(input1);
     player2 = get_player(input2);
     othello_game(player1, player2);
+    // play_muiti_game(player1, player2, 1000);
 
     // gui board_gui;
     // Board board;
