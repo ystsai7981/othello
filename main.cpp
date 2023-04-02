@@ -195,6 +195,10 @@ int main(void){
     srand( time(NULL) );
     int input1, input2;
     Player player1, player2;
+    cout << "Please select a player from the list below" << endl;
+    cout << " Human player\t(" << 1 << ")" << endl;
+    cout << " Random player\t(" << 2 << ")" << endl;
+    cout << " MCS player\t(" << 3 << ")" << endl;
     cout << "Enter player 1: ";
     cin >> input1;
     cout << "Enter player 2: ";

@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# App Trash
+*.vscode
+
+# Shell script
+*.sh
